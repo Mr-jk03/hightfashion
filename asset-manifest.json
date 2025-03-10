@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/hightfashion/static/css/main.8b09abbf.css",
+    "main.js": "/hightfashion/static/js/main.0e55e44b.js",
+    "index.html": "/hightfashion/index.html",
+    "main.8b09abbf.css.map": "/hightfashion/static/css/main.8b09abbf.css.map",
+    "main.0e55e44b.js.map": "/hightfashion/static/js/main.0e55e44b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8b09abbf.css",
+    "static/js/main.0e55e44b.js"
+  ]
+}
