@@ -53,6 +53,12 @@ const Authentication = () => {
     };
     regisData();
   };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+  
   const handleLogin = () => {
     if (!formRegister) {
       const login = async () => {
@@ -94,6 +100,7 @@ const Authentication = () => {
                   <input
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     type="text"
                     className="form-control"
                     id="username"
@@ -104,6 +111,7 @@ const Authentication = () => {
                   <input
                     value={passWord}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     type="password"
                     className="form-control"
                     id="password"

@@ -1,5 +1,6 @@
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -10,24 +11,52 @@ import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { AddtoCart, getUserInfo } from "../../config/apiFunction";
+import { sizeColor, SizeColor } from "./type/Type";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import * as reducer from "../../features/redux/reducer";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
 
 type Props = {
   isMobile: boolean;
   dataForm?: any;
+  setStatusCart: (value: boolean) => void;
+  handleChangeItem: (value: string) => void;
 };
 
-const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
+const FormProducts: FC<Props> = ({
+  isMobile,
+  dataForm,
+  setStatusCart,
+  handleChangeItem,
+}) => {
+  const dispatch = useDispatch();
+  const redux = useSelector((state: RootState) => state.auth);
+  const dataFormAuth = redux.form.formData.formAuthentication;
   const [open, setOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState<any>();
   const [valueDialog, setValueDiaLog] = useState<any>();
   const [imageDetail, setImageDetail] = useState<any>();
   const [pricePrd, setPricePrd] = useState();
   const [newPrice, setNewPrice] = useState<number>();
   const [statusPrd, setStatusPrd] = useState("");
   const [inputQuantity, setInputQuantity] = useState(1);
+  const [colorProduct, setColorProduct] = useState<any>([]);
+  const [sizeProduct, setSizeProduct] = useState<any>([]);
+
+  const [activeColor, setActiveColor] = useState("");
+  const [activeSize, setActiveSize] = useState("");
+  const [valueSelect, setValueSelect] = useState<SizeColor>(sizeColor);
+  const label = { inputProps: { "aria-label": "Checkbox demo" } };
   const handleClose = () => {
     setOpen(false);
     setValueDiaLog("");
     setNewPrice(0);
+    setActiveColor("");
+    setActiveSize("");
+    setValueSelect({ color: "", size: "" });
   };
   const handleOpenDialog = (item: any) => {
     setOpen(true);
@@ -50,9 +79,91 @@ const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
     } else {
       setStatusPrd("Hết hàng");
     }
+
+    const color = JSON.parse(item.color);
+    setColorProduct(color);
+    const size = JSON.parse(item.size);
+    setSizeProduct(size);
   };
+  useEffect(() => {
+    const resUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const res = await getUserInfo(token);
+        setUserInfo(res.result[0]);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    resUser();
+  }, []);
+
+  const handleColorClick = (key: string, value: any) => {
+    setValueSelect((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+    if (key === "color") {
+      setActiveColor(value);
+    } else if (key === "size") {
+      setActiveSize(value);
+    }
+  };
+
+  const handleAddtocart = async () => {
+    if (userInfo?.id == undefined) {
+      toast.error("Vui lòng đăng nhập để thêm sản phẩm!");
+    } else if (valueDialog?.id == undefined) {
+      toast.error("Vui lòng chọn sản phẩm!");
+    } else if (valueSelect.color === "" && valueSelect.size === "") {
+      toast.error("Vui lòng chọn Màu sắc và kích thước!");
+    } else {
+      try {
+        const res = await AddtoCart(
+          userInfo?.id,
+          valueDialog?.id,
+          valueSelect?.color,
+          valueSelect?.size,
+          inputQuantity
+        );
+        if (res) {
+          toast.success("Thêm sản phẩm thành công !");
+          setStatusCart(true);
+        } else {
+          toast.error("Lỗi thêm sản phẩm !");
+        }
+      } catch (err: any) {
+        toast.error(err);
+      }
+    }
+  };
+  const handleBuyProduct = (value: any) => {
+    if (activeColor === "") {
+      toast.error("Vui lòng chọn màu sắc cho sản phẩm !");
+    } else if (activeSize === "") {
+      toast.error("Vui lòng chọn kích thước cho sản phẩm !");
+    } else {
+      handleChangeItem("ORDER");
+      const obj = {
+        user_id: dataFormAuth.user_id,
+        id: value.id,
+        category_id: value.category_id,
+        product_name: value.product_name,
+        product_image: value.product_image,
+        description: value.description,
+        price: newPrice ? newPrice : value.price,
+        stock_quantity: inputQuantity,
+        color: activeColor,
+        size: activeSize,
+      };
+      dispatch(reducer.action.buyProduct(obj));
+    }
+  };
+
   return (
-    <div className="container" style={{paddingBottom:'281px'}}>
+    <div className="container" style={{ paddingBottom: "281px" }}>
       <div className="row mt-3">
         <div className="col-md-10 col-sm-12">
           <h2 style={{ borderLeft: "9px solid #e45d15", paddingLeft: "10px" }}>
@@ -84,19 +195,25 @@ const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
                     src={item.product_image}
                     alt=""
                     style={{ height: "100%", width: "100%" }}
+                    onClick={() => handleOpenDialog(item)}
                   />
                   <div className="action-prd">
                     <div
                       style={{ height: "40px", width: "100%", padding: "3px" }}
                     >
-                      <button onClick={() => handleOpenDialog(item)}>
-                        <i className="bi bi-search"></i>
+                      <button
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Checkbox
+                          {...label}
+                          icon={<FavoriteBorder />}
+                          checkedIcon={<Favorite />}
+                        />
                       </button>
-                    </div>
-                    <div
-                      style={{ height: "40px", width: "100%", padding: "3px" }}
-                    >
-                      <button>2</button>
                     </div>
                   </div>
                 </div>
@@ -240,19 +357,46 @@ const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
                   </span>
                 </div>
                 <div className="col-12 mt-3">
-                  <span style={{ fontSize: "15px" }}>Màu sắc:</span>
+                  Màu sắc:
+                  {colorProduct.map((i: string, index: number) => (
+                    <span
+                      key={index}
+                      className="text-color"
+                      style={{
+                        backgroundColor:
+                          activeColor === i ? "rgb(234, 129, 49)" : "#fff",
+                        color: activeColor === i ? "#fff" : "black",
+                      }}
+                      onClick={() => handleColorClick("color", i)}
+                    >
+                      {i}
+                    </span>
+                  ))}
                 </div>
                 <div className="col-12 mt-3">
-                  <span style={{ fontSize: "15px" }}>
-                    Kích thước: <button>X</button> <button>X</button>{" "}
-                    <button>X</button>
-                  </span>
+                  Kích thước:
+                  {sizeProduct.map((i: string, index: number) => (
+                    <span
+                      key={index}
+                      className="text-color"
+                      style={{
+                        backgroundColor:
+                          activeSize === i ? "rgb(20, 125, 231)" : "#fff",
+                        color: activeSize === i ? "#fff" : "black",
+                      }}
+                      onClick={() => handleColorClick("size", i)}
+                    >
+                      {i.toUpperCase()}
+                    </span>
+                  ))}
                 </div>
                 <div className="col-12 mt-3">
                   <span style={{ fontSize: "15px" }}>
                     Số lượng:
                     <div className="input-quantity">
-                      <button>
+                      <button
+                        onClick={() => setInputQuantity((prev) => prev + 1)}
+                      >
                         <AddIcon />
                       </button>
                       <input
@@ -263,7 +407,11 @@ const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
                           setInputQuantity(Math.max(1, Number(e.target.value)))
                         }
                       />
-                      <button>
+                      <button
+                        onClick={() =>
+                          setInputQuantity((prev) => Math.max(1, prev - 1))
+                        }
+                      >
                         <RemoveIcon />
                       </button>
                     </div>
@@ -271,8 +419,10 @@ const FormProducts: FC<Props> = ({ isMobile, dataForm }) => {
                 </div>
                 <div className="col-12 mt-3">
                   <div className="box-btn">
-                    <button>Mua hàng</button>
-                    <button>
+                    <button onClick={() => handleBuyProduct(valueDialog)}>
+                      Mua hàng
+                    </button>
+                    <button onClick={handleAddtocart}>
                       <AddShoppingCartIcon /> Thêm vào giỏ hàng
                     </button>
                   </div>

@@ -2,10 +2,13 @@ import React, { useEffect, useReducer, useState } from "react";
 import Navbar from "./Navbar/Navbar";
 import MainHome from "./MainHome/MainHome";
 import BestSaler from "./BestSaler/BestSaler";
-import { selectProduct } from "../config/apiFunction";
+import { getUserInfo, selectProduct } from "../config/apiFunction";
 import { toast } from "react-toastify";
 import FormProducts from "./Male/FormProducts";
 import Footer from "./Footer/Footer";
+import UserInfo from "./UserInfo/UserInfo";
+import OrderForm from "./OrderForm/OrderForm";
+import StatusOrder from "../StatusOrder/StatusOrder";
 
 const initState = { activeComponent: "MAINHOME" };
 
@@ -14,7 +17,9 @@ function reducer(state: { activeComponent: string }, action: { type: string }) {
     case "MAINHOME":
     case "MALEFORM":
     case "FEMALEFORM":
-    case "KIDFORM":
+    case "USER":
+    case "ORDER":
+    case "ORDERSTT":
       return { activeComponent: action.type };
     default:
       return state;
@@ -24,6 +29,8 @@ function reducer(state: { activeComponent: string }, action: { type: string }) {
 const Home = () => {
   const [state, dispatch] = useReducer(reducer, initState);
   const [dataForm, setDataForm] = useState<any>([]);
+  const [dataUser, setDataUser] = useState<any>([]);
+  const [statusCart, setStatusCart] = useState(false);
   const handleChangeItem = (value: string) => {
     dispatch({ type: value });
   };
@@ -63,9 +70,10 @@ const Home = () => {
       case "FEMALEFORM":
         fetchData(4, "Lỗi lấy danh sách sản phẩm nữ");
         break;
-      case "KIDFORM":
-        fetchData(5, "Lỗi lấy danh sách sản phẩm trẻ em");
+      case "USER":
         break;
+      case "ORDERSTT":
+        break
       default:
         break;
     }
@@ -73,11 +81,14 @@ const Home = () => {
 
   return (
     <div className="home-position">
-      <Navbar handleChangeItem={handleChangeItem} />
+      <Navbar handleChangeItem={handleChangeItem} statusCart={statusCart}/>
       {state.activeComponent === "MAINHOME" && <MainHome isMobile={isMobile} />}
-      {["MALEFORM", "FEMALEFORM", "KIDFORM"].includes(state.activeComponent) && (
-        <FormProducts isMobile={isMobile} dataForm={dataForm} />
+      {["MALEFORM", "FEMALEFORM"].includes(state.activeComponent) && (
+        <FormProducts isMobile={isMobile} dataForm={dataForm} setStatusCart={setStatusCart} handleChangeItem={handleChangeItem}/>
       )}
+      {state.activeComponent === "USER" && <UserInfo />}
+      {state.activeComponent === "ORDER" && <OrderForm isMobile={isMobile}/>}
+      {state.activeComponent === "ORDERSTT" && <StatusOrder />}
       <Footer />
     </div>
   );
