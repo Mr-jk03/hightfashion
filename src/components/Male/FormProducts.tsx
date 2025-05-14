@@ -11,7 +11,11 @@ import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { AddtoCart, getUserInfo } from "../../config/apiFunction";
+import {
+  addFavoritePrd,
+  AddtoCart,
+  getUserInfo,
+} from "../../config/apiFunction";
 import { sizeColor, SizeColor } from "./type/Type";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -126,6 +130,7 @@ const FormProducts: FC<Props> = ({
           valueDialog?.id,
           valueSelect?.color,
           valueSelect?.size,
+          valueDialog?.brand,
           inputQuantity
         );
         if (res) {
@@ -157,8 +162,22 @@ const FormProducts: FC<Props> = ({
         stock_quantity: inputQuantity,
         color: activeColor,
         size: activeSize,
+        brand: value.brand,
       };
       dispatch(reducer.action.buyProduct(obj));
+    }
+  };
+
+  const handleAddFavoritePrd = async (value: any) => {
+    try {
+      const res: any = await addFavoritePrd(dataFormAuth.user_id, value.id);
+      if (res) {
+        toast.success(res.message);
+      } else {
+        toast.error("Lỗi không thêm được sản phẩm yêu thích");
+      }
+    } catch (err: any) {
+      toast.error(err.errorMessage);
     }
   };
 
@@ -209,6 +228,7 @@ const FormProducts: FC<Props> = ({
                         }}
                       >
                         <Checkbox
+                          onClick={() => handleAddFavoritePrd(item)}
                           {...label}
                           icon={<FavoriteBorder />}
                           checkedIcon={<Favorite />}
@@ -366,12 +386,14 @@ const FormProducts: FC<Props> = ({
                         backgroundColor:
                           activeColor === i ? "rgb(234, 129, 49)" : "#fff",
                         color: activeColor === i ? "#fff" : "black",
+                        marginRight: "10px",
                       }}
                       onClick={() => handleColorClick("color", i)}
                     >
                       {i}
                     </span>
                   ))}
+                  Thương hiệu: <b>{valueDialog?.brand}</b>
                 </div>
                 <div className="col-12 mt-3">
                   Kích thước:

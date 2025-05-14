@@ -27,6 +27,7 @@ export const formBuyProduct: BUYPRODUCTFORM = {
   stock_quantity: null,
   color: null,
   size: null,
+  brand: null,
 };
 export const formItemOrderVnPay: LISTITEMORDERVNPAY = {
   user_id: null,

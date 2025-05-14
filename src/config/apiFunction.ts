@@ -65,6 +65,7 @@ export const AddtoCart = async (
   product_id: number,
   color: string,
   size: string,
+  brand: string,
   quantity: number
 ) => {
   const res = await apiClient.post("/addtoCart", {
@@ -72,6 +73,7 @@ export const AddtoCart = async (
     product_id,
     color,
     size,
+    brand,
     quantity,
   });
   return res.data;
@@ -90,6 +92,14 @@ export const TotalItems = async (user_id: number) => {
   return res.data;
 };
 
+export const addFavoritePrd = async (user_id: number, product_id: number) => {
+  const res = await apiClient.post("/addFavoriteProduct", {
+    user_id,
+    product_id,
+  });
+  return res.data;
+};
+
 export const apiTinhThanh = async () => {
   const res = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
   return res.data;
@@ -100,6 +110,11 @@ export const apihuyen = async (id: number) => {
 };
 export const apixa = async (id: number) => {
   const res = await axios.get(`https://esgoo.net/api-tinhthanh/3/${id}.htm`);
+  return res.data;
+};
+
+export const addQuestion = async (userMessage: any) => {
+  const res = await apiClient.post("/botRepply", { userMessage });
   return res.data;
 };
 

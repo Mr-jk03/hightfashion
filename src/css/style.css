@@ -909,7 +909,7 @@ h2 {
   border-color: #5dade2;
   box-shadow: 0 0 5px 2px rgba(93, 173, 226, 0.5);
 }
-.type-method:focus{
+.type-method:focus {
   border-color: #5dade2;
   box-shadow: 0 0 5px 2px rgba(93, 173, 226, 0.5);
 }
@@ -931,6 +931,28 @@ h2 {
 
 .tt {
   color: #e44a2b;
+}
+
+.chatbot {
+  position: fixed;
+  visibility: hidden;
+  opacity: 0;
+  right: -650px;
+  bottom: 0;
+  height: 450px;
+  width: 350px;
+  background-color: #2193f1f6;
+  padding: 5px;
+  z-index: 999;
+  transition: right 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.active {
+  visibility: visible;
+  opacity: 1;
+  right: 10px;
 }
 
 @media (max-width: 992px) {

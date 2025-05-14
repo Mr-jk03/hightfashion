@@ -26,7 +26,7 @@ const CartItems: FC<Props> = ({
   const redux = useSelector((state: RootState) => state.auth);
   const dataFormAuth = redux.form.formData.formAuthentication;
   const handleBuyProductfromCart = (item: any) => {
-    handleShowCartItems(false)
+    handleShowCartItems(false);
     handleChangeItem("ORDER");
     let obj = {
       user_id: dataFormAuth.user_id,
@@ -38,6 +38,7 @@ const CartItems: FC<Props> = ({
       stock_quantity: item.quantity,
       color: item.color,
       size: item.size,
+      brand: item.brand,
     };
     dispatch(reducer.action.buyProduct(obj));
   };

@@ -34,6 +34,7 @@ export interface BUYPRODUCTFORM {
   stock_quantity: string | null;
   color: string | null;
   size: string | null;
+  brand: string | null;
 }
 
 export interface LISTITEMORDERVNPAY{

@@ -12,9 +12,9 @@ function App() {
     <>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<Home />}/>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Authentication />} />
-        <Route path="/statusOrder" element={<StatusOrder />}/>
+        <Route path="/statusOrder" element={<StatusOrder />} />
       </Routes>
     </>
   );

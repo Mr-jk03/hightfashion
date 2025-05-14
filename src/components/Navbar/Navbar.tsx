@@ -305,7 +305,7 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
               <div
                 style={{ textTransform: "uppercase", cursor: "pointer" }}
                 className="col-2 text-center"
-                onClick={()=>handleChangeItem("ORDERSTT")}
+                onClick={()=>handleChangeItem("ACCESSORY")}
               >
                 Phụ kiện
               </div>

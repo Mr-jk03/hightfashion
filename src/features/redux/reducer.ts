@@ -67,6 +67,7 @@ export const fashionReducer = (state = InitialState, action: ActionTypes) => {
             stock_quantity: action.payload.stock_quantity,
             color: action.payload.color,
             size: action.payload.size,
+            brand: action.payload.brand,
           });
         }
       }

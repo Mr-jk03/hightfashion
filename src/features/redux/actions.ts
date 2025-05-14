@@ -9,6 +9,7 @@ export interface PAYLOADBUYPRODUCT {
   stock_quantity: number | null;
   color: string | null;
   size: string | null;
+  brand: string | null;
 }
 
 export interface AUTHENTICATIONCUSTOMER {

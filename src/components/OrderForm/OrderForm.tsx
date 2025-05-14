@@ -160,6 +160,7 @@ const OrderForm: FC<Props> = ({ isMobile }) => {
           size: product.size,
           quantity: product.stock_quantity,
           price: product.price,
+          brand: product.brand,
         })),
       };
       if (obj.payment_method === "0") {
@@ -181,7 +182,7 @@ const OrderForm: FC<Props> = ({ isMobile }) => {
           .then((res: any) => {
             if (res) {
               window.open(res.paymentUrl, "_blank");
-              dispatch(reducer.action.addlistModel(obj))
+              dispatch(reducer.action.addlistModel(obj));
             } else {
               toast.error("Lỗi thanh toán đơn hàng !");
             }
@@ -205,7 +206,8 @@ const OrderForm: FC<Props> = ({ isMobile }) => {
           <div className="col-xl-5 col-lg-4">Sản phẩm</div>
           <div className="col-xl-1 col-lg-1">Đơn giá</div>
           <div className="col-xl-1 col-lg-1">Kích thước</div>
-          <div className="col-xl-2 col-lg-1">Số lượng</div>
+          <div className="col-xl-1 col-lg-1">Số lượng</div>
+          <div className="col-xl-1 col-lg-1">Thương hiệu</div>
           <div className="col-xl-1 col-lg-1">Màu sắc</div>
           <div className="col-xl-1 col-lg-2">Thành tiền</div>
           <div className="col-xl-1 col-lg-2">Thao tác</div>
@@ -229,15 +231,11 @@ const OrderForm: FC<Props> = ({ isMobile }) => {
             <div className="col-xl-1 col-lg-1">
               {product.size.toUpperCase()}
             </div>
-            <div className="col-xl-2 col-lg-1">
-              <div className="quantity-input">
-                <input
-                  type="number"
-                  value={product.stock_quantity}
-                  className="input-total-pr"
-                  readOnly
-                />
-              </div>
+            <div className="col-xl-1 col-lg-1">
+              <div className="quantity-input">{product.stock_quantity}</div>
+            </div>
+            <div className="col-xl-1 col-lg-1">
+              <div className="quantity-input">{product.brand}</div>
             </div>
             <div className="col-xl-1 col-lg-1">{product.color}</div>
             <div className="col-xl-1 col-lg-2 tt">
