@@ -12,6 +12,7 @@ import StatusOrder from "../StatusOrder/StatusOrder";
 import Accessory from "./Accessory/Accessory";
 import { Button, Drawer, Backdrop, CircularProgress } from "@mui/material";
 import { initMessageValue, MessageValue } from "../config/type";
+import TypingDots from "./Customs/TypingDots";
 
 const initState = { activeComponent: "MAINHOME" };
 
@@ -23,6 +24,7 @@ function reducer(state: { activeComponent: string }, action: { type: string }) {
     case "USER":
     case "ORDER":
     case "ACCESSORY":
+    case "DISCOUNT":
       return { activeComponent: action.type };
     default:
       return state;
@@ -38,6 +40,7 @@ const Home = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   const [showGreeting, setShowGreeting] = useState(false);
+  const [showBackDrop, setShowBackDrop] = useState(false);
   const [messageValue, setMessageValue] =
     useState<MessageValue>(initMessageValue);
   const [messages, setMessages] = useState<string[]>([]);
@@ -46,6 +49,51 @@ const Home = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 767);
+
+  const handleOpenChatbot = () => {
+    setOpen(true);
+    setShowMessage(false);
+    setShowGreeting(false);
+    setTimeout(() => {
+      setShowMessage(true);
+      setTimeout(() => {
+        setShowGreeting(true);
+      }, 1000);
+    }, 1000);
+  };
+
+  const handleSendMessage = async () => {
+    try {
+      if (inputValue.trim()) {
+        const userMessage = inputValue;
+        setMessageValue((prev: any) => ({
+          ...prev,
+          user: [userMessage],
+        }));
+        setMessages((prev) => [...prev, userMessage]);
+        setInputValue("");
+        const res = await addQuestion(userMessage);
+        setShowBackDrop(false);
+        setBotAnswer((prev) => [...prev, null]);
+        setTimeout(() => {
+          const answer =
+            res?.reply?.replace(/\n/g, "<br />") || "Bot không có phản hồi";
+          setBotAnswer((prev) => {
+            const updated = [...prev];
+            updated[updated.length - 1] = answer;
+            return updated;
+          });
+          setMessageValue((prev: any) => ({
+            ...prev,
+            bot: [res?.reply],
+          }));
+          setShowBackDrop(true);
+        }, 2000);
+      }
+    } catch (err) {
+      toast.error("Lỗi liên quan đến Network");
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -68,7 +116,6 @@ const Home = () => {
         toast.error("Lỗi network");
       }
     };
-
     switch (state.activeComponent) {
       case "MAINHOME":
         setDataForm([]);
@@ -79,48 +126,14 @@ const Home = () => {
       case "FEMALEFORM":
         fetchData(4, "Lỗi lấy danh sách sản phẩm nữ");
         break;
+      case "DISCOUNT":
+        // fetchData(4, "Lỗi lấy danh sách sản phẩm nữ");
+        break;
     }
   }, [state]);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, botAnswer]);
-  const handleOpenChatbot = () => {
-    setOpen(true);
-    setShowMessage(false);
-    setShowGreeting(false);
-    setTimeout(() => {
-      setShowMessage(true);
-      setTimeout(() => {
-        setShowGreeting(true);
-      }, 1000);
-    }, 1000);
-  };
-
-  const handleSendMessage = async () => {
-    try {
-      if (inputValue.trim()) {
-        setMessageValue((prev: any) => ({
-          ...prev,
-          user: [inputValue],
-        }));
-        setMessages((prev) => [...prev, inputValue]);
-        const res = await addQuestion(inputValue);
-        if (res) {
-          setBotAnswer((prev) => [
-            ...prev,
-            res.reply?.replace(/\n/g, "<br />") || "Bot không có phản hồi",
-          ]);
-          setMessageValue((prev: any) => ({
-            ...prev,
-            bot: [res.reply],
-          }));
-        }
-        setInputValue("");
-      }
-    } catch (err: any) {
-      toast.error("Lỗi liên quan đến Network");
-    }
-  };
 
   return (
     <div className="home-position">
@@ -128,8 +141,14 @@ const Home = () => {
         handleChangeItem={(val) => dispatch({ type: val })}
         statusCart={statusCart}
       />
-      {state.activeComponent === "MAINHOME" && <MainHome isMobile={isMobile} />}
-      {["MALEFORM", "FEMALEFORM"].includes(state.activeComponent) && (
+      {state.activeComponent === "MAINHOME" && (
+        <MainHome isMobile={isMobile} setStatusCart={setStatusCart} 
+          handleChangeItem={(val) => dispatch({ type: val })}
+        />
+      )}
+      {["MALEFORM", "FEMALEFORM", "DISCOUNT"].includes(
+        state.activeComponent
+      ) && (
         <FormProducts
           isMobile={isMobile}
           dataForm={dataForm}
@@ -291,76 +310,70 @@ const Home = () => {
                         {msg}
                       </span>
                     </div>
-                    {botAnswer[idx] && (
+                    <div
+                      style={{
+                        textAlign: "left",
+                        marginTop: "10px",
+                      }}
+                    >
                       <div
                         style={{
-                          textAlign: "left",
-                          marginTop: "10px",
+                          height: "auto",
+                          width: "75%",
+                          display: "grid",
+                          gridTemplateColumns: "10% 70%",
+                          justifyContent: "space-around",
+                          alignItems: "center",
                         }}
                       >
                         <div
                           style={{
-                            height: "auto",
-                            width: "75%",
-                            display: "grid",
-                            gridTemplateColumns: "10% 70%",
-                            justifyContent: "space-around",
+                            height: "25px",
+                            width: "25px",
+                            borderRadius: "50%",
+                            padding: "2px",
+                            border: "1px solid #2193f1f6",
+                            display: "flex",
+                            justifyContent: "center",
                             alignItems: "center",
                           }}
                         >
-                          <div
+                          <img
+                            src="/image/service.gif"
+                            alt=""
                             style={{
-                              height: "25px",
-                              width: "25px",
+                              height: "100%",
+                              width: "100%",
                               borderRadius: "50%",
-                              padding: "2px",
-                              border: "1px solid #2193f1f6",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
                             }}
-                          >
-                            <img
-                              src="/image/service.gif"
-                              alt=""
+                          />
+                        </div>
+                        <div
+                          style={{
+                            backgroundColor: "#2193f1f6",
+                            borderRadius: "5px",
+                            padding: "5px",
+                            fontSize: "15px",
+                            color: "#fff",
+                          }}
+                        >
+                          {botAnswer[idx] ? (
+                            <p
                               style={{
-                                height: "100%",
-                                width: "100%",
-                                borderRadius: "50%",
+                                fontSize: "13px",
+                                fontFamily: "roboto",
+                                margin: 0,
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html: botAnswer[idx],
                               }}
                             />
-                          </div>
-                          <div
-                            style={{
-                              backgroundColor: "#2193f1f6",
-                              borderRadius: "5px",
-                              padding: "5px",
-                              fontSize: "15px",
-                              color: "#fff",
-                            }}
-                          >
-                            {!showGreeting ? (
-                              <CircularProgress
-                                size={20}
-                                thickness={5}
-                                sx={{ color: "#fff", marginLeft: "5px" }}
-                              />
-                            ) : (
-                              <p
-                                style={{
-                                  fontSize: "13px",
-                                  fontFamily: "roboto",
-                                  margin: 0,
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: botAnswer[idx],
-                                }}
-                              />
-                            )}
-                          </div>
+                          ) : (
+                            <TypingDots />
+                          )}
                         </div>
                       </div>
-                    )}
+                    </div>
                   </React.Fragment>
                 ))}
                 <div ref={messagesEndRef} />

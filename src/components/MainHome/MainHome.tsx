@@ -44,9 +44,11 @@ const FireNav = styled(List)<{ component?: React.ElementType }>({
 
 type Props = {
   isMobile: boolean;
+  setStatusCart: (value: boolean) => void;
+  handleChangeItem: (value: string) => void;
 };
 
-const MainHome: FC<Props> = ({ isMobile }) => {
+const MainHome: FC<Props> = ({ isMobile, setStatusCart, handleChangeItem }) => {
   const [open, setOpen] = React.useState(true);
 
   const [banner, setBanner] = useState<any>([]);
@@ -90,7 +92,7 @@ const MainHome: FC<Props> = ({ isMobile }) => {
   };
 
   return (
-    <div className="container" style={{paddingBottom:'281px'}}>
+    <div className="container" style={{ paddingBottom: "281px" }}>
       <div className="row">
         {!isMobile && (
           <div className="col-md-3">
@@ -297,7 +299,7 @@ const MainHome: FC<Props> = ({ isMobile }) => {
           </div>
         )}
       </div>
-      <BestSaler />
+      <BestSaler setStatusCart={setStatusCart} handleChangeItem={handleChangeItem}/>
     </div>
   );
 };

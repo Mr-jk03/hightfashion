@@ -277,6 +277,7 @@ h2 {
   position: relative;
 }
 .menu-absolute {
+  width: 320px;
   position: absolute;
   top: 50px;
   left: 0;
@@ -375,13 +376,14 @@ h2 {
   transform: rotate(-90deg);
 }
 .product {
-  height: 350px;
+  height: 100%;
   width: 80%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: auto;
+  padding: 8px;
 }
 .img-product:hover {
   transition: 0.2s ease-in-out;
@@ -648,8 +650,6 @@ h2 {
   border: 1px solid rgb(218, 216, 216);
   padding: 5px;
   border-radius: 3px;
-  /* height: auto;
-  width: 100%;*/
 }
 /*----------------change pass*/
 .changs-title {
@@ -953,6 +953,35 @@ h2 {
   visibility: visible;
   opacity: 1;
   right: 10px;
+}
+
+.parentGrid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 100%;
+  gap: 10px;
+}
+
+.parentGrid2 {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  grid-template-rows: 100%;
+  gap: 5px;
+}
+.childdrent {
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+.childrent2 {
+  height: 160px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 5px;
 }
 
 @media (max-width: 992px) {

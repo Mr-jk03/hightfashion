@@ -40,6 +40,7 @@ const FormProducts: FC<Props> = ({
   const redux = useSelector((state: RootState) => state.auth);
   const dataFormAuth = redux.form.formData.formAuthentication;
   const [open, setOpen] = useState(false);
+  const [productValue, setProductValue] = useState<any>();
   const [userInfo, setUserInfo] = useState<any>();
   const [valueDialog, setValueDiaLog] = useState<any>();
   const [imageDetail, setImageDetail] = useState<any>();
@@ -181,25 +182,49 @@ const FormProducts: FC<Props> = ({
     }
   };
 
+  const handleOnkeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      const value = (event.target as HTMLInputElement).value
+        .trim()
+        .toLowerCase();
+      const filtered = dataForm.filter((item: any) =>
+        item.product_name?.toLowerCase().includes(value)
+      );
+      setProductValue(filtered);
+    }
+  };
+  useEffect(() => {
+    setProductValue(dataForm);
+  }, [dataForm]);
+
   return (
     <div className="container" style={{ paddingBottom: "281px" }}>
       <div className="row mt-3">
-        <div className="col-md-10 col-sm-12">
+        <div className="col-md-10 col-sm-8">
           <h2 style={{ borderLeft: "9px solid #e45d15", paddingLeft: "10px" }}>
             {dataForm?.[0]?.category_name}
           </h2>
         </div>
-        {!isMobile && (
-          <div className="col-md-2">
+        <div className="col-md-2 col-sm-4">
+          <TextField
+            size="small"
+            id="standard-basic"
+            label="Tìm kiếm"
+            variant="standard"
+            onKeyDown={handleOnkeyDown}
+          />
+        </div>
+        {/* {!isMobile && (
+          <div className="col-md-2 mt-2">
             <Button color="error" variant="outlined">
               Xem thêm
             </Button>
           </div>
-        )}
+        )} */}
       </div>
       <div className="row">
         <div className="row mt-3">
-          {dataForm?.map((item: any, index: number) => (
+          {productValue?.map((item: any, index: number) => (
             <div className="col-md-3 col-6 mb-3" key={index}>
               <div className="product" style={{ cursor: "pointer" }}>
                 <div

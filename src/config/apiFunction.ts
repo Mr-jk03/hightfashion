@@ -135,3 +135,13 @@ export const getUrlVnPay = async (data: any) => {
   const res = await apiClient.get(`/IPN?${data}`);
   return res.data;
 };
+
+export const getListFavoriteProduct = async (userId: number) => {
+  const res = await apiClient.post("/getFavoriteByUser", { userId });
+  return res.data;
+};
+
+export const getListBestSaler = async () => {
+  const res = await apiClient.get("/getListProductBestSaler");
+  return res.data;
+};

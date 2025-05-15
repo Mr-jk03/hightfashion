@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import ChangePass from "./ChangePass/ChangePass";
 import * as reducer from "../../features/redux/reducer";
 import { useDispatch } from "react-redux";
+import FavoriteProducts from "./FavoriteProducts/FavoriteProducts";
 
 const UserInfo = () => {
   const actionLogout = useDispatch();
@@ -66,6 +67,7 @@ const UserInfo = () => {
       setFile(event.target.files[0]);
     }
   };
+ 
 
   const handleUpload = async () => {
     if (!file) {
@@ -305,7 +307,7 @@ const UserInfo = () => {
               {state.activeComponent === "ORDERS" && "1"}
               {state.activeComponent === "NOTIFICATIONS" && "2"}
               {state.activeComponent === "VOUCHERS" && "3"}
-              {state.activeComponent === "FAVORITES" && "4"}
+              {state.activeComponent === "FAVORITES" && <FavoriteProducts />}
               {state.activeComponent === "CHANGE_PASS" && <ChangePass />}
             </div>
           </div>

@@ -6,7 +6,7 @@ import { InputFilterEcagoModal } from "../../customMUI/InputFilter";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import * as reducer from '../../features/redux/reducer'
+import * as reducer from "../../features/redux/reducer";
 
 import Menu from "../../Mobile/Menu";
 import { Drawer } from "@mui/material";
@@ -28,7 +28,7 @@ type Props = {
 
 const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const handleChangeFormLogin = () => {
     navigate("/login");
   };
@@ -40,7 +40,6 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
   const [user, setUser] = useState<any>();
   const [cartItems, setCartItems] = useState<any>([]);
   const [totalItems, setTotalItems] = useState(0);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -69,7 +68,7 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
         const res = await getUserInfo(token);
         if (res) {
           setUser(res.result[0]);
-          dispatch(reducer.action.authen(res.result[0]))
+          dispatch(reducer.action.authen(res.result[0]));
           const resCartItems: any = await GetcartItems(res.result[0].id);
           if (resCartItems) {
             setCartItems(resCartItems.data);
@@ -77,7 +76,6 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
             toast.error("Lỗi lấy thông tin giỏ hàng");
           }
         }
-        
       } catch (error) {
         console.error("Lỗi liên quan đến network");
       }
@@ -112,7 +110,7 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
           } else {
             toast.error("Lỗi tổng số lượng sản phẩm");
           }
-  
+
           const cartRes: any = await GetcartItems(user.id);
           if (cartRes) {
             setCartItems(cartRes.data);
@@ -126,11 +124,9 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
       fetchUpdatedCartInfo();
     }
   }, [statusCart]);
-
   const handleShowCartItems = async (value: boolean) => {
     setOpenDrawer(value);
   };
-
   const handleDeleteCartItems = async (i: any) => {
     handleShowCartItems(false);
     const result = await Swal.fire({
@@ -143,7 +139,6 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
       cancelButtonColor: "##283593",
       cancelButtonText: "Hủy",
     });
-
     if (result.isConfirmed) {
       const res = await DeleteItems(i.id);
       if (res) {
@@ -240,14 +235,15 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
             <div className="col-sm-4 col-8">
               <img
                 style={{ height: "100%", width: "100%" }}
-                src="https://bizweb.dktcdn.net/100/311/013/themes/802137/assets/logo.png?1718007850853" alt=""
+                src="https://bizweb.dktcdn.net/100/311/013/themes/802137/assets/logo.png?1718007850853"
+                alt=""
               />
             </div>
             <div className="col-sm-4 col-2 d-flex justify-content-end align-items-center">
-              <div className="row">
+              <div className="row" style={{ width: "374px" }}>
                 {!isMobile && (
                   <div className="col-8 d-flex justify-content-end align-items-center">
-                    <InputFilterEcagoModal />
+                    {/* <InputFilterEcagoModal /> */}
                   </div>
                 )}
                 <div className="col-2 d-flex justify-content-end align-items-center">
@@ -305,13 +301,14 @@ const Navbar: FC<Props> = ({ handleChangeItem, statusCart }) => {
               <div
                 style={{ textTransform: "uppercase", cursor: "pointer" }}
                 className="col-2 text-center"
-                onClick={()=>handleChangeItem("ACCESSORY")}
+                onClick={() => handleChangeItem("ACCESSORY")}
               >
                 Phụ kiện
               </div>
               <div
                 style={{ textTransform: "uppercase", cursor: "pointer" }}
                 className="col-2 text-center"
+                onClick={() =>handleChangeItem('DISCOUNT')}
               >
                 Khuyến mãi
               </div>
