@@ -13,6 +13,7 @@ import Accessory from "./Accessory/Accessory";
 import { Button, Drawer, Backdrop, CircularProgress } from "@mui/material";
 import { initMessageValue, MessageValue } from "../config/type";
 import TypingDots from "./Customs/TypingDots";
+import About from "./About/About";
 
 const initState = { activeComponent: "MAINHOME" };
 
@@ -24,7 +25,7 @@ function reducer(state: { activeComponent: string }, action: { type: string }) {
     case "USER":
     case "ORDER":
     case "ACCESSORY":
-    case "DISCOUNT":
+    case "ABOUT":
       return { activeComponent: action.type };
     default:
       return state;
@@ -126,8 +127,8 @@ const Home = () => {
       case "FEMALEFORM":
         fetchData(4, "Lỗi lấy danh sách sản phẩm nữ");
         break;
-      case "DISCOUNT":
-        // fetchData(4, "Lỗi lấy danh sách sản phẩm nữ");
+      case "ACCESSORY":
+        fetchData(6, "Lỗi lấy danh sách phụ kiện");
         break;
     }
   }, [state]);
@@ -142,7 +143,9 @@ const Home = () => {
         statusCart={statusCart}
       />
       {state.activeComponent === "MAINHOME" && (
-        <MainHome isMobile={isMobile} setStatusCart={setStatusCart} 
+        <MainHome
+          isMobile={isMobile}
+          setStatusCart={setStatusCart}
           handleChangeItem={(val) => dispatch({ type: val })}
         />
       )}
@@ -159,7 +162,15 @@ const Home = () => {
       {state.activeComponent === "USER" && <UserInfo />}
       {state.activeComponent === "ORDER" && <OrderForm isMobile={isMobile} />}
       {state.activeComponent === "ACCESSORY" && (
-        <Accessory isMobile={isMobile} />
+        <Accessory
+          isMobile={isMobile}
+          dataForm={dataForm}
+          setStatusCart={setStatusCart}
+          handleChangeItem={(val) => dispatch({ type: val })}
+        />
+      )}
+      {state.activeComponent === "ABOUT" && (
+        <About />
       )}
       <Footer />
 

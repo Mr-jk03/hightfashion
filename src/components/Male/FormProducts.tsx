@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import * as reducer from "../../features/redux/reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
+import { formatter } from "../helps/formatter";
 
 type Props = {
   isMobile: boolean;
@@ -370,10 +371,10 @@ const FormProducts: FC<Props> = ({
                           fontSize: "30px",
                         }}
                       >
-                        Giá: {newPrice} <sup>đ</sup>
+                        Giá: {newPrice ? formatter(newPrice) : ''} <sup>đ</sup>
                       </span>
                       <del style={{ marginLeft: "10px", color: "gray" }}>
-                        {pricePrd} <sup>đ</sup>
+                        {pricePrd ? formatter(pricePrd) : ''} <sup>đ</sup>
                       </del>
                     </div>
                   ) : (
@@ -385,7 +386,7 @@ const FormProducts: FC<Props> = ({
                           fontSize: "30px",
                         }}
                       >
-                        Giá: {pricePrd} <sup>đ</sup>
+                        Giá: {pricePrd ? formatter(pricePrd) : ''} <sup>đ</sup>
                       </span>
                     </div>
                   )}

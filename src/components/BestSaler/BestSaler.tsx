@@ -19,6 +19,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import * as reducer from "../../features/redux/reducer";
+import { formatter } from "../helps/formatter";
 
 type Props = {
   setStatusCart: (value: boolean) => void;
@@ -291,10 +292,11 @@ const BestSaler: FC<Props> = ({ setStatusCart, handleChangeItem }) => {
                           fontSize: "30px",
                         }}
                       >
-                        Giá: {newPrice} <sup>đ</sup>
+                        Giá: {newPrice ? formatter(newPrice) : 0} <sup>đ</sup>
                       </span>
                       <del style={{ marginLeft: "10px", color: "gray" }}>
-                        {pricePrd} <sup>đ</sup>
+                        {pricePrd ? formatter(pricePrd) : 0}
+                        <sup>đ</sup>
                       </del>
                     </div>
                   ) : (
@@ -306,7 +308,8 @@ const BestSaler: FC<Props> = ({ setStatusCart, handleChangeItem }) => {
                           fontSize: "30px",
                         }}
                       >
-                        Giá: {pricePrd} <sup>đ</sup>
+                        Giá: {pricePrd ? formatter(pricePrd) : 0}
+                        <sup>đ</sup>
                       </span>
                     </div>
                   )}
